@@ -189,7 +189,7 @@ const login = async function(req, res) {
 const getUser = async function (req, res) {
 
   try {
-    //const userId = req.params.userId
+   
     const userIdFromParams = req.params.userId;
     const userIdFromToken = req.userId
     
@@ -312,7 +312,7 @@ const updateUser = async function(req, res) {
 
   if (password) {
       if (!isValid(password)) { return res.status(400).send({ status: false, message: "password is required" }) }
-      //if (!(/^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[#?!@$%^&*-]).{8,15}$/.test(data.password.trim()))) { return res.status(400).send({ status: false, msg: "please provide a valid password with one uppercase letter ,one lowercase, one character and one number " }) }
+     
 
       const encryptPassword = await bcrypt.hash(password, saltRounds)
 

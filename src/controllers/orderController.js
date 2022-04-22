@@ -28,21 +28,15 @@ const createOrder = async(req, res) => {
 
         //validation for request body
         if (!isValidRequestBody(requestBody)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "Invalid request body. Please provide the the input to proceed.",
-                });
+            return res.status(400)
+                .send({status: false,message: "Invalid request body. Please provide the the input to proceed."});
         }
         //Extract parameters
         const { cartId, cancellable, status } = requestBody;
 
         //validating userId
         if (!isValidObjId.test(userId)) {
-            return res
-                .status(400)
-                .send({ status: false, message: "Invalid userId in params." });
+            return res.status(400).send({ status: false, message: "Invalid userId in params." });
         }
 
         const searchUser = await UserModel.findOne({ _id: userId });
@@ -59,16 +53,10 @@ const createOrder = async(req, res) => {
         }
 
         if (!cartId) {
-            return res.status(400).send({
-                status: false,
-                message: `Cart doesn't exists for ${userId}`,
-            });
+            return res.status(400).send({status: false,message: `Cart doesn't exists for ${userId}`});
         }
         if (!isValidObjId.test(cartId)) {
-            return res.status(400).send({
-                status: false,
-                message: `Invalid cartId in request body.`,
-            });
+            return res.status(400).send({ status: false,message: `Invalid cartId in request body.`});
         }
 
         //searching cart to match the cart by userId whose is to be ordered.
@@ -77,19 +65,13 @@ const createOrder = async(req, res) => {
             userId: userId,
         });
         if (!searchCartDetails) {
-            return res.status(400).send({
-                status: false,
-                message: `Cart doesn't belongs to ${userId}`,
-            });
+            return res.status(400).send({status: false,message: `Cart doesn't belongs to ${userId}`});
         }
 
         //must be a boolean value.
         if (cancellable) {
             if (typeof cancellable != "boolean") {
-                return res.status(400).send({
-                    status: false,
-                    message: `Cancellable must be either 'true' or 'false'.`,
-                });
+                return res.status(400).send({status: false,message: `Cancellable must be either 'true' or 'false'.`});
             }
         }
 
@@ -102,10 +84,7 @@ const createOrder = async(req, res) => {
 
         //verifying whether the cart is having any products or not.
         if (!searchCartDetails.items.length) {
-            return res.status(202).send({
-                status: false,
-                message: `Order already placed for this cart. Please add some products in cart to make an order.`,
-            });
+            return res.status(202).send({ status: false,message: `Order already placed for this cart. Please add some products in cart to make an order.`,});
         }
 
         //adding quantity of every products
@@ -136,9 +115,7 @@ const createOrder = async(req, res) => {
                 totalItems: 0,
             },
         });
-        return res
-            .status(200)
-            .send({ status: true, message: "Order placed.", data: savedOrder });
+        return res.status(200).send({ status: true, message: "Order placed.", data: savedOrder });
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message });
     }
@@ -155,26 +132,16 @@ const updateOrder = async(req, res) => {
 
         //validating request body.
         if (!isValidRequestBody(requestBody)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "Invalid request body. Please provide the the input to proceed.",
-                });
+            return res.status(400).send({ status: false, message: "Invalid request body. Please provide the the input to proceed."});
         }
         //extract params
         const { orderId, status } = requestBody;
         if (!isValidObjId.test(userId)) {
-            return res
-                .status(400)
-                .send({ status: false, message: "Invalid userId in params." });
+            return res.status(400).send({ status: false, message: "Invalid userId in params." });
         }
         const searchUser = await UserModel.findOne({ _id: userId });
         if (!searchUser) {
-            return res.status(400).send({
-                status: false,
-                message: `user doesn't exists for ${userId}`,
-            });
+            return res.status(400).send({status: false,message: `user doesn't exists for ${userId}`});
         }
 
         //Authentication & authorization
@@ -184,28 +151,17 @@ const updateOrder = async(req, res) => {
         }
 
         if (!orderId) {
-            return res.status(400).send({
-                status: false,
-                message: `Order doesn't exists for ${orderId}`,
-            });
+            return res.status(400).send({ status: false,message: `Order doesn't exists for ${orderId}`});
         }
 
         //verifying does the order belongs to user or not.
         isOrderBelongsToUser = await OrderModel.findOne({ userId: userId });
         if (!isOrderBelongsToUser) {
-            return res.status(400).send({
-                status: false,
-                message: `Order doesn't belongs to ${userId}`,
-            });
+            return res.status(400).send({status: false,message: `Order doesn't belongs to ${userId}`});
         }
 
         if (!status) {
-            return res
-                .status(400)
-                .send({
-                    status: true,
-                    message: "Mandatory paramaters not provided. Please enter current status of the order."
-                });
+            return res .status(400).send({status: true,message: "Mandatory paramaters not provided. Please enter current status of the order."});
         }
         if (status) {
           if(!["pending", "completed", "cancelled"].includes(status)){

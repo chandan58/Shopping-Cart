@@ -16,10 +16,7 @@ const userAuth = async (req, res, next) => {
     const decodeToken = jwt.verify(splitToken[1], "Secret-Key")
     
     if (!decodeToken) {
-      return res.status(403).send({
-          status: false,
-          message: `Invalid authentication token in request`,
-        });
+      return res.status(403).send({status: false,message: `Invalid authentication token in request`});
     }
 
     req.userId = decodeToken.userId

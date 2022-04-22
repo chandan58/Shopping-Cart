@@ -271,8 +271,7 @@ const updateProduct = async function (req, res) {
     try {
         let data = req.body;
         const productId = req.params.productId
-        //if (!(Object.keys(data).length > 0)) { return res.status(400).send({ status: false, message: "Invalid request Please provide details of an user" }); }
-
+       
         if (!isValidObjectId(productId)) {
             return res.status(400).send({ status: false, msg: "productId is invalid" });
         }
@@ -313,16 +312,17 @@ const updateProduct = async function (req, res) {
         if (isValid(currencyFormat))  {
             dataObject['currencyFormat'] = currencyFormat.trim()
         }
+        if (isValid(availableSizes))  {
+            dataObject['availableSizes'] = availableSizes.trim()
+        }
+
         let file = req.files
         if (file.length > 0) {
             let uploadFileUrl = await uploadFile(file[0])
             dataObject['productImage'] = uploadFileUrl
         }
   
-        if (validForEnum(availableSizes))  {
-            data.availableSizes = JSON.parse(availableSizes)
-            dataObject['availableSizes'] = data.availableSizes
-        }
+
         let updatedProduct = await productModel.findOneAndUpdate({_id:productId},
              dataObject,
             { new: true })
@@ -336,7 +336,9 @@ const updateProduct = async function (req, res) {
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message });
     }
-}//delete product................................................
+}
+
+//delete product................................................
 
 const deleteProduct = async function (req, res) {
     
@@ -356,9 +358,7 @@ const deleteProduct = async function (req, res) {
             return res.status(400).send({status:false, message:"product already deleted."})
         }
 
-        const deletedDetails = await productModel.findOneAndUpdate(
-            { _id: productId },
-            { $set: { isDeleted: true, deletedAt: new Date() } }, {new:true})
+        const deletedDetails = await productModel.findOneAndUpdate( { _id: productId },{ $set: { isDeleted: true, deletedAt: new Date() } }, {new:true})
 
         return res.status(200).send({ status: true, message: 'Product deleted successfully.', data:deletedDetails })
     }
